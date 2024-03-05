@@ -3,14 +3,22 @@ import { StyleSheet } from "react-native";
 export const GlobalStyle = StyleSheet.create({
     sm: {
         fontSize:14,
-        // fontFamily:'Rubik-Light',
+        fontFamily:'Rubik-Light',
     },
     md: {
         fontSize:18,
-        // fontFamily:'Rubik-Regular',
+        fontFamily:'Rubik-Regular',
     },
     lg: {
         fontSize:22,
-        // fontFamily:'Rubik-Bold',
+        fontFamily:'Rubik-Bold',
     },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    center:{
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })
