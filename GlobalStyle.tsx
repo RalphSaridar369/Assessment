@@ -17,12 +17,4 @@ export const GlobalStyle = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  center: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  link: {
-    color: "blue",
-    textDecorationLine: "underline",
-  },
 });
