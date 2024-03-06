@@ -30,4 +30,8 @@ export const GlobalStyle = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  link: {
+    color: "#1870d5",
+    textDecorationLine: "underline",
+  },
 });
