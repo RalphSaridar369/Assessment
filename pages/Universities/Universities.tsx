@@ -5,6 +5,7 @@ import { IUniversity } from "../../interfaces/University";
 import { UniversityAPI } from "../../api/api";
 import { University } from "./components/University";
 import axios from "axios";
+import { getData, storeData } from "../../utils/AsyncStorage";
 
 function UniversitiesScreen() {
   const [universities, setUniversities] = useState<IUniversity[]>([]);
@@ -14,8 +15,15 @@ function UniversitiesScreen() {
   const [country, setCountry] = useState<string>("");
 
   useEffect(() => {
+    fetchSearch();
     fetchData();
-  }, []);
+  }, [country]);
+
+  const fetchSearch = async () => {
+    const country = (getData && (await getData("country"))) || "";
+    console.log("country: ", country);
+    setCountry(country);
+  };
 
   const fetchData = async () => {
     try {
@@ -61,7 +69,7 @@ function UniversitiesScreen() {
   const handleSearch = async (value: string) => {
     console.log(value);
     setCountry(value);
-    await fetchData();
+    storeData("country", value);
   };
 
   return loading ? (
