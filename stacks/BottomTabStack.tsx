@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import UniversitiesScreen from "../pages/Universities/Universities";
 import { Ionicons } from "@expo/vector-icons";
+import EntriesScreen from "../pages/Entries/Entries";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,11 +35,11 @@ export default function BottomTabStack() {
           }}
         />
         <Tab.Screen
-          name="Settings"
-          component={SettingsScreen}
+          name="Entries"
+          component={EntriesScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="settings" color={color} size={size} />
+              <Ionicons name="albums" color={color} size={size} />
             ),
           }}
         />

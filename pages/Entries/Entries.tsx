@@ -2,13 +2,12 @@ import { ScrollView, ActivityIndicator, View, TextInput } from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useEffect, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
-import { UniversityAPI } from "../../api/api";
-import { University } from "./components/University";
-import axios from "axios";
+import { EntriesAPI } from "../../api/api";
+import { Entry } from "./components/Entry";
 import { getData, storeData } from "../../utils/AsyncStorage";
 
-function UniversitiesScreen() {
-  const [universities, setUniversities] = useState<IUniversity[]>([]);
+function EntriesScreen() {
+  const [entries, setEntries] = useState<IUniversity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [limit, setLimit] = useState<number>(10);
   const [offset, setOffset] = useState<number>(0);
@@ -19,27 +18,17 @@ function UniversitiesScreen() {
     fetchData();
   }, [country]);
 
-  const fetchSearch = async () => {
-    const country = (getData && (await getData("country"))) || "";
-    console.log("country: ", country);
-    setCountry(country);
-  };
+  const fetchSearch = async () => {};
 
   const fetchData = async () => {
     try {
-      const response = await UniversityAPI.get("/search", {
-        params: {
-          limit,
-          // offset,
-          country,
-        },
-      });
-      const universities = response.data;
-      console.log(universities);
-      setUniversities(universities);
-      // setUniversities((prevUniversities) => [
+      const response = await EntriesAPI.get("");
+      const entries = response.data.entries;
+      console.log(entries);
+      setEntries(entries);
+      // setEntries((prevUniversities) => [
       //   ...prevUniversities,
-      //   ...universities,
+      //   ...entries,
       // ]);
       // setOffset((prevOffset) => prevOffset + limit);
     } catch (error) {
@@ -97,13 +86,11 @@ function UniversitiesScreen() {
         //   })
         // }
       >
-        {universities &&
-          universities.map((university, index) => (
-            <University {...university} key={index} />
-          ))}
+        {entries &&
+          entries.map((entry, index) => <Entry {...entry} key={index} />)}
       </ScrollView>
     </>
   );
 }
 
-export default UniversitiesScreen;
+export default EntriesScreen;
