@@ -17,4 +17,17 @@ export const GlobalStyle = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  searchBarContainer: {
+    padding: 10,
+    backgroundColor: "#fff",
+  },
+  searchBar: {
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "#1870d5",
+    padding: 5,
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 });

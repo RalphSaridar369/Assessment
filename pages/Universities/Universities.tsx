@@ -1,11 +1,12 @@
-import { ScrollView, ActivityIndicator, View, TextInput } from "react-native";
+import { ScrollView, ActivityIndicator, View } from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useEffect, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
 import { UniversityAPI } from "../../api/api";
 import { University } from "./components/University";
-import axios from "axios";
 import { getData, storeData } from "../../utils/AsyncStorage";
+import { Ionicons } from "@expo/vector-icons";
+import { SearchContainer } from "../../components/SearchContainer";
 
 function UniversitiesScreen() {
   const [universities, setUniversities] = useState<IUniversity[]>([]);
@@ -21,7 +22,6 @@ function UniversitiesScreen() {
 
   const fetchSearch = async () => {
     const country = (getData && (await getData("country"))) || "";
-    console.log("country: ", country);
     setCountry(country);
   };
 
@@ -78,9 +78,10 @@ function UniversitiesScreen() {
     </View>
   ) : (
     <>
-      <TextInput
+      <SearchContainer
         placeholder="Search by country"
         value={country}
+        icon={<Ionicons name="search" size={24} color="#1870d5" />}
         onChangeText={(value) => handleSearch(value)}
       />
       <ScrollView

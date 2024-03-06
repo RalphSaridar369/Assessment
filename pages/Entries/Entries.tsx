@@ -1,28 +1,46 @@
-import { ScrollView, ActivityIndicator, View, TextInput } from "react-native";
+import {
+  ScrollView,
+  ActivityIndicator,
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
 import { EntriesAPI } from "../../api/api";
 import { Entry } from "./components/Entry";
 import { getData, storeData } from "../../utils/AsyncStorage";
+import { Ionicons } from "@expo/vector-icons";
+import { EntryStyle } from "./Style";
+import { SearchContainer } from "../../components/SearchContainer";
 
 function EntriesScreen() {
   const [entries, setEntries] = useState<IUniversity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [limit, setLimit] = useState<number>(10);
   const [offset, setOffset] = useState<number>(0);
-  const [country, setCountry] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
 
   useEffect(() => {
     fetchSearch();
     fetchData();
-  }, [country]);
+  }, [title]);
 
-  const fetchSearch = async () => {};
+  const fetchSearch = async () => {
+    const title = (getData && (await getData("title"))) || "";
+    setTitle(title);
+  };
 
   const fetchData = async () => {
     try {
-      const response = await EntriesAPI.get("");
+      const response = await EntriesAPI.get("", {
+        params: {
+          title,
+          limit,
+        },
+      });
       const entries = response.data.entries;
       console.log(entries);
       setEntries(entries);
@@ -55,10 +73,10 @@ function EntriesScreen() {
   //   }
   // };
 
-  const handleSearch = async (value: string) => {
+  const handleTitleSearch = async (value: string) => {
     console.log(value);
-    setCountry(value);
-    storeData("country", value);
+    setTitle(value);
+    storeData("title", value);
   };
 
   return loading ? (
@@ -67,11 +85,13 @@ function EntriesScreen() {
     </View>
   ) : (
     <>
-      <TextInput
-        placeholder="Search by country"
-        value={country}
-        onChangeText={(value) => handleSearch(value)}
+      <SearchContainer
+        placeholder="Search by title"
+        value={title}
+        icon={<Ionicons name="search" size={24} color="#1870d5" />}
+        onChangeText={(value) => handleTitleSearch(value)}
       />
+
       <ScrollView
         style={GlobalStyle.container}
         // onScroll={({ nativeEvent }) => handleScroll({ nativeEvent })}
