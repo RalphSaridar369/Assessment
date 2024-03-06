@@ -1,16 +1,16 @@
 import { ScrollView } from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useEffect, useState } from "react";
-import { IUniversity } from "../../interfaces/University";
 import { EntriesAPI } from "../../api/api";
 import { Entry } from "./components/Entry";
 import { getData, storeData } from "../../utils/AsyncStorage";
 import { Ionicons } from "@expo/vector-icons";
 import { SearchContainer } from "../../components/SearchContainer";
 import Loader from "../../components/Loader";
+import { IEntry } from "../../interfaces/Entry";
 
 function EntriesScreen() {
-  const [entries, setEntries] = useState<IUniversity[]>([]);
+  const [entries, setEntries] = useState<IEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [title, setTitle] = useState<string>("");
 
@@ -32,21 +32,19 @@ function EntriesScreen() {
         },
       });
       const entries = response.data.entries;
-      console.log(entries);
       if (title.length > 0) {
         setEntries(entries);
       } else {
         setEntries((prevEntries) => [...prevEntries, ...entries]);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleTitleSearch = async (value: string) => {
-    console.log(value);
     setTitle(value);
     storeData("title", value);
   };

@@ -4,7 +4,7 @@ export const storeData = async (key: string, value: string) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -13,6 +13,6 @@ export const getData = async (key: string) => {
     const value: string | null = await AsyncStorage.getItem(key);
     return value;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };

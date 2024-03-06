@@ -43,14 +43,13 @@ function UniversitiesScreen() {
         ]);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSearch = async (value: string) => {
-    console.log(value);
     setCountry(value);
     storeData("country", value);
   };
