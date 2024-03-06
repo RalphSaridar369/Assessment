@@ -19,13 +19,13 @@ export default function BottomTabStack() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Feed"
+        initialRouteName="Universities"
         screenOptions={{
-          tabBarShowLabel:false
+          tabBarShowLabel: false,
         }}
       >
         <Tab.Screen
-          name="Home"
+          name="Universities"
           component={UniversitiesScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
