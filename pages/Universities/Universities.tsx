@@ -1,4 +1,4 @@
-import { ScrollView } from "react-native";
+import { FlatList, ScrollView } from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useEffect, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
@@ -12,10 +12,13 @@ import Loader from "../../components/Loader";
 function UniversitiesScreen() {
   const [universities, setUniversities] = useState<IUniversity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [limit, setLimit] = useState<number>(60);
+  const [limit, setLimit] = useState<number>(20);
+  const [offset, setOffset] = useState<number>(0);
   const [country, setCountry] = useState<string>("");
 
   useEffect(() => {
+    setOffset(0);
+    setUniversities([]);
     fetchSearch();
     fetchData();
   }, [country]);
@@ -30,18 +33,15 @@ function UniversitiesScreen() {
       const response = await UniversityAPI.get("/search", {
         params: {
           limit,
+          offset,
           country,
         },
       });
       const universities = response.data;
-      if (country.length > 0) {
-        setUniversities(universities);
-      } else {
-        setUniversities((prevUniversities) => [
-          ...prevUniversities,
-          ...universities,
-        ]);
-      }
+      setUniversities((prevUniversities) => [
+        ...prevUniversities,
+        ...universities,
+      ]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -54,6 +54,11 @@ function UniversitiesScreen() {
     storeData("country", value);
   };
 
+  const refetchData = async () => {
+    setOffset(limit + offset);
+    await fetchData();
+  };
+
   return loading ? (
     <Loader />
   ) : (
@@ -63,6 +68,11 @@ function UniversitiesScreen() {
         value={country}
         icon={<Ionicons name="search" size={24} color="#1870d5" />}
         onChangeText={(value) => handleSearch(value)}
+      />
+      <FlatList
+        data={universities}
+        renderItem={({ item }) => <University {...item} />}
+        onEndReached={() => refetchData()}
       />
       <ScrollView style={GlobalStyle.container}>
         {universities &&
