@@ -31,14 +31,15 @@ function UniversitiesScreen() {
     let favourites = await getData("favourites");
     if (favourites) {
       let parsedFavourites = JSON.parse(favourites);
-      console.log("parsedJSON: ", parsedFavourites);
       setFavourites(parsedFavourites);
     }
   };
 
   const isFavourite = (name: string) => {
     if (!favourites || favourites?.length == 0) return false;
-    return favourites?.some((favourite) => favourite?.name === name);
+    return (
+      favourites && favourites?.some((favourite) => favourite?.name === name)
+    );
   };
 
   const fetchSearch = async () => {
@@ -103,7 +104,6 @@ function UniversitiesScreen() {
               setFavourites={(data: IUniversity) => {
                 if (favourites) setFavourites([...favourites, data]);
                 else setFavourites([data]);
-                console.log(favourites);
               }}
             />
           ))}
