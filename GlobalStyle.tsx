@@ -18,10 +18,12 @@ export const GlobalStyle = StyleSheet.create({
     backgroundColor: "#fff",
   },
   searchBarContainer: {
+    height: 60,
     padding: 10,
     backgroundColor: "#fff",
   },
   searchBar: {
+    height: 60,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: "#1870d5",

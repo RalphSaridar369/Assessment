@@ -21,7 +21,7 @@ export const SearchContainer = ({
         <TextInput
           placeholder={placeholder}
           value={value}
-          style={{ color: "#1870d5" }}
+          style={{ color: "#1870d5", flex: 1 }}
           onChangeText={(value) => onChangeText(value)}
         />
         {icon}

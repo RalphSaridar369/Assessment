@@ -1,4 +1,4 @@
-import { FlatList, ScrollView } from "react-native";
+import { FlatList, ScrollView, TouchableOpacity } from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useEffect, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
@@ -17,15 +17,15 @@ function UniversitiesScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [limit, setLimit] = useState<number>(20);
   const [offset, setOffset] = useState<number>(0);
-  const [country, setCountry] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     setOffset(0);
     setUniversities([]);
-    fetchSearch();
+    // fetchSearch();
     fetchData();
     getFavouritesAndSet();
-  }, [country]);
+  }, []);
 
   const getFavouritesAndSet = async () => {
     let favourites = await getData("favourites");
@@ -43,8 +43,8 @@ function UniversitiesScreen() {
   };
 
   const fetchSearch = async () => {
-    const country = (getData && (await getData("country"))) || "";
-    setCountry(country);
+    const query = (getData && (await getData("query"))) || "";
+    setSearch(query);
   };
 
   const fetchData = async () => {
@@ -53,7 +53,7 @@ function UniversitiesScreen() {
         params: {
           limit,
           offset,
-          country,
+          name: search,
         },
       });
       const universities = response.data;
@@ -68,12 +68,15 @@ function UniversitiesScreen() {
     }
   };
 
-  const handleSearch = async (value: string) => {
-    setCountry(value);
-    storeData("country", value);
+  const handleSearch = async () => {
+    console.log("first");
+    setLoading(true);
+    // await storeData("query", search);
+    await fetchData();
   };
 
   const refetchData = async () => {
+    setLoading(true);
     setOffset(limit + offset);
     await fetchData();
   };
@@ -83,18 +86,34 @@ function UniversitiesScreen() {
   ) : (
     <>
       <SearchContainer
-        placeholder="Search by country"
-        value={country}
-        icon={<Ionicons name="search" size={24} color="#1870d5" />}
-        onChangeText={(value) => handleSearch(value)}
+        placeholder="Search by Name"
+        value={search}
+        icon={
+          <TouchableOpacity
+            onPress={() => handleSearch()}
+            style={{ backgroundColor: "red", flex: 1 }}
+          >
+            <Ionicons name="search" size={24} color="#1870d5" />
+          </TouchableOpacity>
+        }
+        onChangeText={(value) => setSearch(value)}
       />
-      {/* <FlatList
+      <FlatList
         contentContainerStyle={{ backgroundColor: "#ffffff" }}
         data={universities}
-        renderItem={({ item }) => <University {...item} />}
+        renderItem={({ item }) => (
+          <University
+            university={item}
+            isFavourite={() => isFavourite(item.name)}
+            setFavourites={(data: IUniversity) => {
+              if (favourites) setFavourites([...favourites, data]);
+              else setFavourites([data]);
+            }}
+          />
+        )}
         onEndReached={() => refetchData()}
-      /> */}
-      <ScrollView style={GlobalStyle.container}>
+      />
+      {/* <ScrollView style={GlobalStyle.container}>
         {universities &&
           universities.map((university, index) => (
             <University
@@ -107,7 +126,7 @@ function UniversitiesScreen() {
               }}
             />
           ))}
-      </ScrollView>
+      </ScrollView> */}
     </>
   );
 }
