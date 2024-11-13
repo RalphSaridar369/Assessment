@@ -11,6 +11,9 @@ import Loader from "../../components/Loader";
 
 function UniversitiesScreen() {
   const [universities, setUniversities] = useState<IUniversity[]>([]);
+  const [favourites, setFavourites] = useState<
+    IUniversity[] | undefined | null
+  >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [limit, setLimit] = useState<number>(20);
   const [offset, setOffset] = useState<number>(0);
@@ -21,7 +24,22 @@ function UniversitiesScreen() {
     setUniversities([]);
     fetchSearch();
     fetchData();
+    getFavouritesAndSet();
   }, [country]);
+
+  const getFavouritesAndSet = async () => {
+    let favourites = await getData("favourites");
+    if (favourites) {
+      let parsedFavourites = JSON.parse(favourites);
+      console.log("parsedJSON: ", parsedFavourites);
+      setFavourites(parsedFavourites);
+    }
+  };
+
+  const isFavourite = (name: string) => {
+    if (!favourites || favourites?.length == 0) return false;
+    return favourites?.some((favourite) => favourite?.name === name);
+  };
 
   const fetchSearch = async () => {
     const country = (getData && (await getData("country"))) || "";
@@ -69,15 +87,25 @@ function UniversitiesScreen() {
         icon={<Ionicons name="search" size={24} color="#1870d5" />}
         onChangeText={(value) => handleSearch(value)}
       />
-      <FlatList
+      {/* <FlatList
+        contentContainerStyle={{ backgroundColor: "#ffffff" }}
         data={universities}
         renderItem={({ item }) => <University {...item} />}
         onEndReached={() => refetchData()}
-      />
+      /> */}
       <ScrollView style={GlobalStyle.container}>
         {universities &&
           universities.map((university, index) => (
-            <University {...university} key={index} />
+            <University
+              university={university}
+              key={index}
+              isFavourite={() => isFavourite(university.name)}
+              setFavourites={(data: IUniversity) => {
+                if (favourites) setFavourites([...favourites, data]);
+                else setFavourites([data]);
+                console.log(favourites);
+              }}
+            />
           ))}
       </ScrollView>
     </>

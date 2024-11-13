@@ -1,71 +1,40 @@
 import { ScrollView } from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useEffect, useState } from "react";
-import { EntriesAPI } from "../../api/api";
-import { Entry } from "./components/Entry";
-import { getData, storeData } from "../../utils/AsyncStorage";
-import { Ionicons } from "@expo/vector-icons";
-import { SearchContainer } from "../../components/SearchContainer";
+import { Favourite } from "./components/Entry";
+import { getData } from "../../utils/AsyncStorage";
 import Loader from "../../components/Loader";
-import { IEntry } from "../../interfaces/Entry";
+import { IUniversity } from "../../interfaces/University";
 
-function EntriesScreen() {
-  const [entries, setEntries] = useState<IEntry[]>([]);
+function FavouritesScreen() {
+  const [favourites, setFavourites] = useState<IUniversity[] | undefined>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [title, setTitle] = useState<string>("");
 
   useEffect(() => {
-    fetchSearch();
     fetchData();
-  }, [title]);
-
-  const fetchSearch = async () => {
-    const title = (getData && (await getData("title"))) || "";
-    setTitle(title);
-  };
+  }, []);
 
   const fetchData = async () => {
-    try {
-      const response = await EntriesAPI.get("", {
-        params: {
-          title,
-        },
-      });
-      const entries = response.data.entries;
-      if (title.length > 0) {
-        setEntries(entries);
-      } else {
-        setEntries((prevEntries) => [...prevEntries, ...entries]);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    let favourites = await getData("favourites");
+    if (favourites) {
+      let parsedFavourites = JSON.parse("favourites");
+      setFavourites(parsedFavourites);
     }
-  };
-
-  const handleTitleSearch = async (value: string) => {
-    setTitle(value);
-    storeData("title", value);
+    setLoading(false);
   };
 
   return loading ? (
     <Loader />
   ) : (
     <>
-      <SearchContainer
-        placeholder="Search by title"
-        value={title}
-        icon={<Ionicons name="search" size={24} color="#1870d5" />}
-        onChangeText={(value) => handleTitleSearch(value)}
-      />
-
       <ScrollView style={GlobalStyle.container}>
-        {entries &&
-          entries.map((entry, index) => <Entry {...entry} key={index} />)}
+        {favourites &&
+          favourites.map((entry, index) => (
+            <Favourite {...entry} key={index} />
+          ))}
       </ScrollView>
     </>
   );
 }
 
-export default EntriesScreen;
+export default FavouritesScreen;
