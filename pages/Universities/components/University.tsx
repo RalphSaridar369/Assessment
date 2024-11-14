@@ -24,6 +24,7 @@ export const University = (props: UniversityProps) => {
     let favourites = await getData("favourites");
     if (favourites) {
       let favouritesParsed = JSON.parse(favourites);
+      console.log("Before setting favourites: ", favouritesParsed);
       if (
         favouritesParsed?.some(
           (favourite: IUniversity) => favourite.name === data.name
@@ -35,7 +36,7 @@ export const University = (props: UniversityProps) => {
         );
       } else {
         //adding to the asyncStorage
-        favouritesParsed = [...favourites, data];
+        favouritesParsed = [...favouritesParsed, data];
       }
       await storeData("favourites", JSON.stringify(favouritesParsed));
       props.setFavourites(favouritesParsed);

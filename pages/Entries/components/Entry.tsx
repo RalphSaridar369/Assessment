@@ -16,13 +16,11 @@ export const Favourite = (props: any) => {
       onPress={() => openUrl(props.university.web_pages[0])}
     >
       <View style={FavouriteStyle.titleContainer}>
-        <Text style={GlobalStyle.md}>{props.university.name}</Text>
+        <Text style={[GlobalStyle.md, { width: "80%" }]}>
+          {props.university.name}
+        </Text>
         {/* <TouchableOpacity onPress={() => setFavourite(props.university)}> */}
-        <Ionicons
-          name={props.isFavourite() ? "heart" : "heart-outline"}
-          size={24}
-          color="red"
-        />
+        <Ionicons name={"heart"} size={24} color="red" />
         {/* </TouchableOpacity> */}
       </View>
       <Text style={GlobalStyle.sm}>

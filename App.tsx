@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
+import "react-native-gesture-handler"; // Required for gestures to work in Expo
+import { StyleSheet, View } from "react-native";
 import BottomTabStack from "./stacks/BottomTabStack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { GlobalStyle } from "./GlobalStyle";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -23,10 +25,10 @@ export default function App() {
   }
 
   return (
-    <View style={GlobalStyle.container} onLayout={onLayoutRootView}>
-      <BottomTabStack />
-    </View>
+    <GestureHandlerRootView>
+      <View style={GlobalStyle.container} onLayout={onLayoutRootView}>
+        <BottomTabStack />
+      </View>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({});
