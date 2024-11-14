@@ -1,4 +1,10 @@
-import { FlatList, ScrollView, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useEffect, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
@@ -6,8 +12,10 @@ import { UniversityAPI } from "../../api/api";
 import { University } from "./components/University";
 import { getData, storeData } from "../../utils/AsyncStorage";
 import { Ionicons } from "@expo/vector-icons";
-import { SearchContainer } from "../../components/SearchContainer";
 import Loader from "../../components/Loader";
+import { UniversityStyle } from "./Style";
+import { Dropdown } from "react-native-element-dropdown";
+import { countries } from "../../constants/Countries";
 
 function UniversitiesScreen() {
   const [universities, setUniversities] = useState<IUniversity[]>([]);
@@ -17,7 +25,8 @@ function UniversitiesScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [limit, setLimit] = useState<number>(20);
   const [offset, setOffset] = useState<number>(0);
-  const [search, setSearch] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
 
   useEffect(() => {
     setOffset(0);
@@ -44,7 +53,7 @@ function UniversitiesScreen() {
 
   const fetchSearch = async () => {
     const query = (getData && (await getData("query"))) || "";
-    setSearch(query);
+    setName(query);
   };
 
   const fetchData = async () => {
@@ -53,7 +62,8 @@ function UniversitiesScreen() {
         params: {
           limit,
           offset,
-          name: search,
+          name,
+          country,
         },
       });
       const universities = response.data;
@@ -66,6 +76,13 @@ function UniversitiesScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCountry = async (value: string) => {
+    console.log("second");
+    setLoading(true);
+    setCountry(value);
+    await fetchData();
   };
 
   const handleSearch = async () => {
@@ -84,20 +101,55 @@ function UniversitiesScreen() {
   return loading ? (
     <Loader />
   ) : (
-    <>
-      <SearchContainer
-        placeholder="Search by Name"
-        value={search}
-        icon={
-          <TouchableOpacity
-            onPress={() => handleSearch()}
-            style={{ backgroundColor: "red", flex: 1 }}
-          >
-            <Ionicons name="search" size={24} color="#1870d5" />
+    <View style={{ backgroundColor: "#fff" }}>
+      <View style={UniversityStyle.headerContainer}>
+        {/* <SearchContainer
+          placeholder="Search by Name"
+          value={search}
+          icon={
+            
+          }
+          onChangeText={(value) => setSearch(value)}
+        /> */}
+        <View style={GlobalStyle.searchBar}>
+          <TextInput
+            placeholder="Search by Name"
+            value={name}
+            style={{ color: "#1870d5", flex: 1 }}
+            onChangeText={(value) => setName(value)}
+          />
+          <TouchableOpacity onPress={() => handleSearch()}>
+            <Ionicons name="search" size={32} color="#1870d5" />
           </TouchableOpacity>
-        }
-        onChangeText={(value) => setSearch(value)}
-      />
+        </View>
+        <Dropdown
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={countries}
+          mode="modal"
+          search
+          maxHeight={300}
+          labelField="label"
+          valueField="label"
+          placeholder=""
+          searchPlaceholder="Search..."
+          value={country}
+          onChange={(item) => {
+            handleCountry(item.label);
+          }}
+          renderLeftIcon={() => (
+            <Ionicons
+              style={styles.icon}
+              color="#1870d5"
+              name="globe"
+              size={32}
+            />
+          )}
+        />
+      </View>
       <FlatList
         contentContainerStyle={{ backgroundColor: "#ffffff" }}
         data={universities}
@@ -127,8 +179,35 @@ function UniversitiesScreen() {
             />
           ))}
       </ScrollView> */}
-    </>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  dropdown: {
+    flex: 1,
+    margin: 16,
+    height: 50,
+    borderBottomColor: "gray",
+    borderBottomWidth: 0.5,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+});
 
 export default UniversitiesScreen;

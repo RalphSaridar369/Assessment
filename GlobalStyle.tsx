@@ -18,18 +18,21 @@ export const GlobalStyle = StyleSheet.create({
     backgroundColor: "#fff",
   },
   searchBarContainer: {
+    flex: 1,
     height: 60,
     padding: 10,
     backgroundColor: "#fff",
   },
   searchBar: {
+    width: "80%",
+    flex: 1,
     height: 60,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: "#1870d5",
     padding: 5,
-    backgroundColor: "#fff",
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
   },
   link: {
