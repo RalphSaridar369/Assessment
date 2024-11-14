@@ -101,6 +101,7 @@ function UniversitiesScreen() {
   };
 
   const refetchData = async () => {
+    console.log("first");
     setLoading(true);
     setOffset(limit + offset);
     await fetchData();
@@ -163,7 +164,7 @@ function UniversitiesScreen() {
             }}
           />
         )}
-        // onEndReached={() => refetchData()}
+        onEndReached={() => refetchData()}
       />
     </View>
   );
