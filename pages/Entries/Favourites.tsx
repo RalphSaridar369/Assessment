@@ -1,15 +1,15 @@
 import { Alert, ScrollView } from "react-native";
 import { GlobalStyle } from "../../GlobalStyle";
 import { useState } from "react";
-import { Favourite } from "./components/Entry";
 import { getData, storeData } from "../../utils/AsyncStorage";
 import Loader from "../../components/Loader";
 import { IUniversity } from "../../interfaces/University";
 import { useFocusEffect } from "@react-navigation/native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { View, Text } from "react-native";
+import { Favourite } from "../Favourites/components/Favourite";
 
-function FavouritesScreen() {
+function Favourites() {
   const [favourites, setFavourites] = useState<IUniversity[] | undefined>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -91,4 +91,4 @@ function FavouritesScreen() {
   );
 }
 
-export default FavouritesScreen;
+export default Favourites;

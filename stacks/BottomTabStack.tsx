@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import UniversitiesScreen from "../pages/Universities/Universities";
 import { Ionicons } from "@expo/vector-icons";
-import EntriesScreen from "../pages/Entries/Entries";
+import EntriesScreen from "../pages/Favourites/Favourites";
 
 const Tab = createBottomTabNavigator();
 
