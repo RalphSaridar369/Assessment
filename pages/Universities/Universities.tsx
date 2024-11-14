@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   StyleSheet,
   TextInput,
@@ -16,6 +17,7 @@ import Loader from "../../components/Loader";
 import { UniversityStyle } from "./Style";
 import { Dropdown } from "react-native-element-dropdown";
 import { countries } from "../../constants/Countries";
+import { AxiosError } from "axios";
 
 function UniversitiesScreen() {
   const [universities, setUniversities] = useState<IUniversity[]>([]);
@@ -93,8 +95,9 @@ function UniversitiesScreen() {
       const response = await UniversityAPI.get("/search", { params });
       const newUniversities = response.data;
       setUniversities((prev) => [...prev, ...newUniversities]);
-    } catch (error) {
-      console.error(error);
+    } catch (error: AxiosError | any) {
+      console.error(error?.message);
+      Alert.alert("Error");
     } finally {
       setLoading(false);
     }
