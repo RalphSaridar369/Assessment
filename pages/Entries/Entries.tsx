@@ -7,6 +7,7 @@ import Loader from "../../components/Loader";
 import { IUniversity } from "../../interfaces/University";
 import { useFocusEffect } from "@react-navigation/native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import { View, Text } from "react-native";
 
 function FavouritesScreen() {
   const [favourites, setFavourites] = useState<IUniversity[] | undefined>([]);
@@ -16,10 +17,10 @@ function FavouritesScreen() {
     fetchData();
   });
 
-  const deleteFavourite = (entry: IUniversity) => {
+  const removeFavourite = async (name: string, swipeable?: any) => {
     Alert.alert(
-      "Delete Favourite",
-      "Are you sure you want to remove this favourite ?",
+      "Remove Favourite",
+      "Are you sure you want to remove favourite ?",
       [
         {
           text: "Yes",
@@ -28,18 +29,37 @@ function FavouritesScreen() {
             if (favourites) {
               let parsedFavourites = JSON.parse(favourites);
               parsedFavourites = parsedFavourites.filter(
-                (favourite: IUniversity) => favourite.name !== entry.name
+                (favourite: IUniversity) => favourite.name !== name
               );
               await storeData("favourites", JSON.stringify(parsedFavourites));
               setFavourites(parsedFavourites);
               await fetchData();
+              if (swipeable) swipeable.close();
             }
           },
         },
-        { text: "No" },
+        {
+          text: "No",
+          onPress: () => {
+            if (swipeable) swipeable.close();
+          },
+        },
       ]
     );
   };
+
+  const renderRightActions = () => (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        width: 75,
+        backgroundColor: "red",
+      }}
+    >
+      <Text style={{ color: "white", fontWeight: "bold" }}>Delete</Text>
+    </View>
+  );
 
   const fetchData = async () => {
     let _favourites = await getData("favourites");
@@ -54,22 +74,20 @@ function FavouritesScreen() {
   return loading ? (
     <Loader />
   ) : (
-    <>
-      <ScrollView style={GlobalStyle.container}>
-        {favourites &&
-          favourites.map((entry, index) => (
-            <Swipeable
-              cancelsTouchesInView
-              onSwipeableOpen={(direction, Swipeable) => {
-                deleteFavourite(entry);
-                Swipeable.close();
-              }}
-            >
-              <Favourite university={entry} key={index} />
-            </Swipeable>
-          ))}
-      </ScrollView>
-    </>
+    <ScrollView style={GlobalStyle.container}>
+      {favourites &&
+        favourites.map((entry, index) => (
+          <Swipeable
+            key={index}
+            renderRightActions={renderRightActions}
+            onSwipeableOpen={(direction, swipeable) =>
+              removeFavourite(entry.name, swipeable)
+            }
+          >
+            <Favourite removeFavourite={removeFavourite} university={entry} />
+          </Swipeable>
+        ))}
+    </ScrollView>
   );
 }
 
