@@ -2,12 +2,12 @@ import { StyleSheet } from "react-native";
 
 export const UniversityStyle = StyleSheet.create({
   headerContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
     width: "100%",
+    height: 140,
     padding: 10,
-    gap: 20,
+    marginBottom: 20,
   },
   universityContainer: {
     paddingBottom: 20,

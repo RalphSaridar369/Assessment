@@ -20,16 +20,15 @@ export const University = (props: UniversityProps) => {
   const [loading, setLoading] = useState(true);
 
   const setFavourite = async (data: IUniversity) => {
+    console.log("first");
     let favourites = await getData("favourites");
     if (favourites) {
       let favouritesParsed = JSON.parse(favourites);
-      console.log("favourites: ", favourites);
       if (
         favouritesParsed?.some(
           (favourite: IUniversity) => favourite.name === data.name
         )
       ) {
-        console.log("removing");
         //removing from the asyncStorage
         favouritesParsed = favouritesParsed.filter(
           (favourite: IUniversity) => favourite.name !== data.name
@@ -41,7 +40,6 @@ export const University = (props: UniversityProps) => {
       await storeData("favourites", JSON.stringify(favouritesParsed));
       props.setFavourites(favouritesParsed);
     } else {
-      console.log("first");
       await storeData("favourites", JSON.stringify([data]));
       props.setFavourites(data);
     }

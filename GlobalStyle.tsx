@@ -24,9 +24,9 @@ export const GlobalStyle = StyleSheet.create({
     backgroundColor: "#fff",
   },
   searchBar: {
-    width: "80%",
+    width: "100%",
     flex: 1,
-    height: 60,
+    height: 140,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: "#1870d5",

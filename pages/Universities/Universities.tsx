@@ -23,7 +23,7 @@ function UniversitiesScreen() {
     IUniversity[] | undefined | null
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [limit, setLimit] = useState<number>(20);
+  const [limit] = useState<number>(20);
   const [offset, setOffset] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [country, setCountry] = useState<string>("");
@@ -31,10 +31,13 @@ function UniversitiesScreen() {
   useEffect(() => {
     setOffset(0);
     setUniversities([]);
-    // fetchSearch();
-    fetchData();
     getFavouritesAndSet();
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    setUniversities(universities);
+  }, [favourites]);
 
   const getFavouritesAndSet = async () => {
     let favourites = await getData("favourites");
@@ -51,45 +54,50 @@ function UniversitiesScreen() {
     );
   };
 
-  const fetchSearch = async () => {
-    const query = (getData && (await getData("query"))) || "";
-    setName(query);
+  const handleCountry = async (value: string) => {
+    if (value !== country) {
+      setLoading(true);
+      setOffset(0);
+      setUniversities([]);
+      await storeData("name", "");
+      await storeData("country", value === "All" ? "" : value);
+      await fetchData();
+    }
+  };
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setOffset(0);
+    setUniversities([]);
+    await storeData("name", name);
+    await fetchData();
   };
 
   const fetchData = async () => {
     try {
-      const response = await UniversityAPI.get("/search", {
-        params: {
-          limit,
-          offset,
-          name,
-          country,
-        },
-      });
-      const universities = response.data;
-      setUniversities((prevUniversities) => [
-        ...prevUniversities,
-        ...universities,
-      ]);
+      let params: {
+        limit: number;
+        offset: number;
+        country?: string;
+        name?: string;
+      } = { limit, offset };
+
+      let _name = await getData("name");
+      if (_name) setName(_name);
+      let _country = await getData("country");
+      if (_country) setCountry(_country);
+
+      if (_country || country) params["country"] = _country || country;
+      if (_name || name) params["name"] = _name || name;
+
+      const response = await UniversityAPI.get("/search", { params });
+      const newUniversities = response.data;
+      setUniversities((prev) => [...prev, ...newUniversities]);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCountry = async (value: string) => {
-    console.log("second");
-    setLoading(true);
-    setCountry(value);
-    await fetchData();
-  };
-
-  const handleSearch = async () => {
-    console.log("first");
-    setLoading(true);
-    // await storeData("query", search);
-    await fetchData();
   };
 
   const refetchData = async () => {
@@ -103,14 +111,6 @@ function UniversitiesScreen() {
   ) : (
     <View style={{ backgroundColor: "#fff" }}>
       <View style={UniversityStyle.headerContainer}>
-        {/* <SearchContainer
-          placeholder="Search by Name"
-          value={search}
-          icon={
-            
-          }
-          onChangeText={(value) => setSearch(value)}
-        /> */}
         <View style={GlobalStyle.searchBar}>
           <TextInput
             placeholder="Search by Name"
@@ -134,7 +134,7 @@ function UniversitiesScreen() {
           maxHeight={300}
           labelField="label"
           valueField="label"
-          placeholder=""
+          placeholder="Search by Country"
           searchPlaceholder="Search..."
           value={country}
           onChange={(item) => {
@@ -157,28 +157,14 @@ function UniversitiesScreen() {
           <University
             university={item}
             isFavourite={() => isFavourite(item.name)}
-            setFavourites={(data: IUniversity) => {
+            setFavourites={async (data: IUniversity) => {
               if (favourites) setFavourites([...favourites, data]);
               else setFavourites([data]);
             }}
           />
         )}
-        onEndReached={() => refetchData()}
+        // onEndReached={() => refetchData()}
       />
-      {/* <ScrollView style={GlobalStyle.container}>
-        {universities &&
-          universities.map((university, index) => (
-            <University
-              university={university}
-              key={index}
-              isFavourite={() => isFavourite(university.name)}
-              setFavourites={(data: IUniversity) => {
-                if (favourites) setFavourites([...favourites, data]);
-                else setFavourites([data]);
-              }}
-            />
-          ))}
-      </ScrollView> */}
     </View>
   );
 }
@@ -192,7 +178,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
   },
   icon: {
-    marginRight: 5,
+    marginRight: 20,
   },
   placeholderStyle: {
     fontSize: 16,
