@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GlobalStyle } from "../../../../GlobalStyle";
-import * as Linking from "expo-linking";
 import { FavouriteStyle } from "../Style";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import Loader from "../../../components/Loader";
+import { IUniversity } from "../../../interfaces/University";
 
-export const Favourite = (props: any) => {
+interface FavouriteProps {
+  university: IUniversity;
+  removeFavourite: (name: string, swipeable?: any) => void;
+}
+
+export const Favourite = (props: FavouriteProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
 

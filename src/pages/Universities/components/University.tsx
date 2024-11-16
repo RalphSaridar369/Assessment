@@ -13,6 +13,7 @@ interface UniversityProps {
   university: IUniversity;
   isFavourite: () => boolean;
   setFavourites: (data: IUniversity) => void;
+  removeFavourite: (name: string) => void;
 }
 
 export const University = (props: UniversityProps) => {
@@ -20,26 +21,16 @@ export const University = (props: UniversityProps) => {
   const [loading, setLoading] = useState(true);
 
   const setFavourite = async (data: IUniversity) => {
-    console.log("first");
     let favourites = await getData("favourites");
     if (favourites) {
       let favouritesParsed = JSON.parse(favourites);
-      console.log("Before setting favourites: ", favouritesParsed);
-      if (
-        favouritesParsed?.some(
-          (favourite: IUniversity) => favourite.name === data.name
-        )
-      ) {
-        //removing from the asyncStorage
-        favouritesParsed = favouritesParsed.filter(
-          (favourite: IUniversity) => favourite.name !== data.name
-        );
+      if (props.isFavourite()) {
+        props.removeFavourite(data.name);
       } else {
-        //adding to the asyncStorage
         favouritesParsed = [...favouritesParsed, data];
       }
       await storeData("favourites", JSON.stringify(favouritesParsed));
-      props.setFavourites(favouritesParsed);
+      props.setFavourites(data);
     } else {
       await storeData("favourites", JSON.stringify([data]));
       props.setFavourites(data);

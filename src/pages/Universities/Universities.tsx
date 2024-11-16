@@ -37,10 +37,6 @@ function UniversitiesScreen() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    setUniversities(universities);
-  }, [favourites]);
-
   const getFavouritesAndSet = async () => {
     let favourites = await getData("favourites");
     if (favourites) {
@@ -50,7 +46,9 @@ function UniversitiesScreen() {
   };
 
   const isFavourite = (name: string) => {
-    if (!favourites || favourites?.length == 0) return false;
+    if (!favourites || favourites?.length == 0) {
+      return false;
+    }
     return (
       favourites && favourites?.some((favourite) => favourite?.name === name)
     );
@@ -73,6 +71,32 @@ function UniversitiesScreen() {
     setUniversities([]);
     await storeData("name", name);
     await fetchData();
+  };
+
+  const removeFavourite = async (name: string) => {
+    Alert.alert(
+      "Remove Favourite",
+      "Are you sure you want to remove favourite ?",
+      [
+        {
+          text: "Yes",
+          onPress: async () => {
+            let favourites = await getData("favourites");
+            if (favourites) {
+              let parsedFavourites = JSON.parse(favourites);
+              parsedFavourites = parsedFavourites.filter(
+                (favourite: IUniversity) => favourite.name !== name
+              );
+              await storeData("favourites", JSON.stringify(parsedFavourites));
+              setFavourites(parsedFavourites);
+            }
+          },
+        },
+        {
+          text: "No",
+        },
+      ]
+    );
   };
 
   const fetchData = async () => {
@@ -104,7 +128,6 @@ function UniversitiesScreen() {
   };
 
   const refetchData = async () => {
-    console.log("first");
     setLoading(true);
     setOffset(limit + offset);
     await fetchData();
@@ -161,13 +184,16 @@ function UniversitiesScreen() {
           <University
             university={item}
             isFavourite={() => isFavourite(item.name)}
+            removeFavourite={removeFavourite}
             setFavourites={async (data: IUniversity) => {
               if (favourites) setFavourites([...favourites, data]);
-              else setFavourites([data]);
+              else {
+                setFavourites([data]);
+              }
             }}
           />
         )}
-        onEndReached={() => refetchData()}
+        // onEndReached={() => refetchData()}
       />
     </View>
   );

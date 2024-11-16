@@ -33,7 +33,6 @@ function Favourites() {
               );
               await storeData("favourites", JSON.stringify(parsedFavourites));
               setFavourites(parsedFavourites);
-              await fetchData();
               if (swipeable) swipeable.close();
             }
           },
