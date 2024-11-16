@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import UniversitiesScreen from "../pages/Universities/Universities";
 import { Ionicons } from "@expo/vector-icons";
-import EntriesScreen from "../pages/Favourites/Favourites";
+import Favourites from "../pages/Favourites/Favourites";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,8 +26,8 @@ export default function BottomTabStack() {
           }}
         />
         <Tab.Screen
-          name="Entries"
-          component={EntriesScreen}
+          name="Favourites"
+          component={Favourites}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="albums" color={color} size={size} />

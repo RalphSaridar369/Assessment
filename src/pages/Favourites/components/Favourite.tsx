@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { GlobalStyle } from "../../../../GlobalStyle";
 import { FavouriteStyle } from "../Style";
 import { Ionicons } from "@expo/vector-icons";

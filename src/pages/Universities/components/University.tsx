@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { IUniversity } from "../../../interfaces/University";
 import { GlobalStyle } from "../../../../GlobalStyle";
 import { UniversityStyle } from "../Style";

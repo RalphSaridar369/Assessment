@@ -25,6 +25,7 @@ function UniversitiesScreen() {
     IUniversity[] | undefined | null
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [limit] = useState<number>(20);
   const [offset, setOffset] = useState<number>(0);
   const [name, setName] = useState<string>("");
@@ -34,7 +35,7 @@ function UniversitiesScreen() {
     setOffset(0);
     setUniversities([]);
     getFavouritesAndSet();
-    fetchData();
+    fetchData(0);
   }, []);
 
   const getFavouritesAndSet = async () => {
@@ -61,7 +62,7 @@ function UniversitiesScreen() {
       setUniversities([]);
       await storeData("name", "");
       await storeData("country", value === "All" ? "" : value);
-      await fetchData();
+      await fetchData(0);
     }
   };
 
@@ -70,13 +71,13 @@ function UniversitiesScreen() {
     setOffset(0);
     setUniversities([]);
     await storeData("name", name);
-    await fetchData();
+    await fetchData(0);
   };
 
   const removeFavourite = async (name: string) => {
     Alert.alert(
       "Remove Favourite",
-      "Are you sure you want to remove favourite ?",
+      "Are you sure you want to remove favourite?",
       [
         {
           text: "Yes",
@@ -92,21 +93,19 @@ function UniversitiesScreen() {
             }
           },
         },
-        {
-          text: "No",
-        },
+        { text: "No" },
       ]
     );
   };
 
-  const fetchData = async () => {
+  const fetchData = async (offsetParam: number) => {
     try {
       let params: {
         limit: number;
         offset: number;
         country?: string;
         name?: string;
-      } = { limit, offset };
+      } = { limit, offset: offsetParam };
 
       let _name = await getData("name");
       if (_name) setName(_name);
@@ -118,19 +117,27 @@ function UniversitiesScreen() {
 
       const response = await UniversityAPI.get("/search", { params });
       const newUniversities = response.data;
-      setUniversities((prev) => [...prev, ...newUniversities]);
+
+      if (response.data)
+        setUniversities((prev) => [...prev, ...newUniversities]);
+
+      setLoading(false);
+      setLoadingMore(false);
     } catch (error: AxiosError | any) {
       console.error(error?.message);
-      Alert.alert("Error");
-    } finally {
       setLoading(false);
+      setLoadingMore(false);
+      Alert.alert("Error");
     }
   };
 
-  const refetchData = async () => {
-    setLoading(true);
-    setOffset(limit + offset);
-    await fetchData();
+  const loadMoreData = async () => {
+    if (!loadingMore) {
+      setLoadingMore(true);
+      const newOffset = offset + limit;
+      setOffset(newOffset);
+      await fetchData(newOffset);
+    }
   };
 
   return loading ? (
@@ -178,7 +185,7 @@ function UniversitiesScreen() {
         />
       </View>
       <FlatList
-        contentContainerStyle={{ backgroundColor: "#ffffff" }}
+        contentContainerStyle={{ minHeight: "100%" }}
         data={universities}
         renderItem={({ item }) => (
           <University
@@ -187,13 +194,12 @@ function UniversitiesScreen() {
             removeFavourite={removeFavourite}
             setFavourites={async (data: IUniversity) => {
               if (favourites) setFavourites([...favourites, data]);
-              else {
-                setFavourites([data]);
-              }
+              else setFavourites([data]);
             }}
           />
         )}
-        // onEndReached={() => refetchData()}
+        onEndReached={!loading && !loadingMore ? loadMoreData : null}
+        ListFooterComponent={loadingMore ? <Loader /> : null}
       />
     </View>
   );
