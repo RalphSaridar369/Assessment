@@ -20,7 +20,7 @@ export const Favourite = (props: FavouriteProps) => {
   return (
     <>
       <SafeAreaProvider>
-        <SafeAreaView style={styles.centeredView}>
+        <SafeAreaView style={GlobalStyle.centeredView}>
           <Modal
             animationType="slide"
             transparent={false}
@@ -29,14 +29,14 @@ export const Favourite = (props: FavouriteProps) => {
               setModalVisible(!modalVisible);
             }}
           >
-            <View style={styles.centeredView}>
-              <View style={styles.modalHeaderView}>
+            <View style={GlobalStyle.centeredView}>
+              <View style={GlobalStyle.modalHeaderView}>
                 <Text style={GlobalStyle.lg}>{props.university.name}</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
                   <Ionicons name="close" size={32} color="red" />
                 </TouchableOpacity>
               </View>
-              <View style={styles.modalView}>
+              <View style={GlobalStyle.modalView}>
                 {loading && <Loader />}
                 <WebView
                   cacheEnabled
@@ -72,24 +72,3 @@ export const Favourite = (props: FavouriteProps) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    width: "100%",
-    paddingVertical: 20,
-  },
-  modalHeaderView: {
-    paddingHorizontal: 20,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  modalView: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "white",
-    paddingVertical: 20,
-  },
-});

@@ -39,4 +39,22 @@ export const GlobalStyle = StyleSheet.create({
     color: "#1870d5",
     textDecorationLine: "underline",
   },
+  centeredView: {
+    flex: 1,
+    width: "100%",
+    paddingVertical: 20,
+  },
+  modalHeaderView: {
+    paddingHorizontal: 20,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  modalView: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "white",
+    paddingVertical: 20,
+  },
 });

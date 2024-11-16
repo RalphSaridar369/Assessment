@@ -1,5 +1,5 @@
-import "react-native-gesture-handler"; // Required for gestures to work in Expo
-import { StyleSheet, View } from "react-native";
+import "react-native-gesture-handler";
+import { View } from "react-native";
 import BottomTabStack from "./src/stacks/BottomTabStack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
