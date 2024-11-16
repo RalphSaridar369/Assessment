@@ -3,11 +3,14 @@ import { View } from "react-native";
 import BottomTabStack from "./src/stacks/BottomTabStack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { GlobalStyle } from "./GlobalStyle";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Context } from "./src/context/context";
+import { IUniversity } from "./src/interfaces/University";
 
 export default function App() {
+  const [favourites, setFavourites] = useState<IUniversity[]>([]); // Explicitly define the state type as IUniversity[]
   const [fontsLoaded, fontError] = useFonts({
     "Rubik-Bold": require("./assets/fonts/Rubik-Bold.ttf"),
     "Rubik-Light": require("./assets/fonts/Rubik-Light.ttf"),
@@ -26,9 +29,11 @@ export default function App() {
 
   return (
     <GestureHandlerRootView>
-      <View style={GlobalStyle.container} onLayout={onLayoutRootView}>
-        <BottomTabStack />
-      </View>
+      <Context.Provider value={{ favourites, setFavourites }}>
+        <View style={GlobalStyle.container} onLayout={onLayoutRootView}>
+          <BottomTabStack />
+        </View>
+      </Context.Provider>
     </GestureHandlerRootView>
   );
 }

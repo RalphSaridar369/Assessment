@@ -1,6 +1,6 @@
 import { Alert, ScrollView } from "react-native";
 import { GlobalStyle } from "../../../GlobalStyle";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Favourite } from "./components/Favourite";
 import { getData, storeData } from "../../utils/AsyncStorage";
 import Loader from "../../components/Loader";
@@ -8,14 +8,17 @@ import { IUniversity } from "../../interfaces/University";
 import { useFocusEffect } from "@react-navigation/native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { View, Text } from "react-native";
+import { Context } from "../../context/context";
 
 function Favourites() {
-  const [favourites, setFavourites] = useState<IUniversity[] | undefined>([]);
+  const { favourites, setFavourites } = useContext(Context);
   const [loading, setLoading] = useState<boolean>(true);
 
   useFocusEffect(() => {
     fetchData();
   });
+
+  useEffect(() => {}, [favourites]);
 
   const removeFavourite = async (name: string, swipeable?: any) => {
     Alert.alert(
@@ -66,6 +69,8 @@ function Favourites() {
       let parsedFavourites = JSON.parse(_favourites);
       if (favourites && parsedFavourites.length > favourites?.length)
         setFavourites(parsedFavourites);
+    } else {
+      setFavourites([]);
     }
     setLoading(false);
   };

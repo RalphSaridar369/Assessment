@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { GlobalStyle } from "../../../GlobalStyle";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
 import { UniversityAPI } from "../../api/api";
 import { University } from "./components/University";
@@ -18,12 +18,11 @@ import { UniversityStyle } from "./Style";
 import { Dropdown } from "react-native-element-dropdown";
 import { countries } from "../../constants/Countries";
 import { AxiosError } from "axios";
+import { Context } from "../../context/context";
 
 function UniversitiesScreen() {
   const [universities, setUniversities] = useState<IUniversity[]>([]);
-  const [favourites, setFavourites] = useState<
-    IUniversity[] | undefined | null
-  >([]);
+  const { favourites, setFavourites } = useContext(Context);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [limit] = useState<number>(20);
