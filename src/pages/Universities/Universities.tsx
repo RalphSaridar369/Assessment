@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { GlobalStyle } from "../../GlobalStyle";
+import { GlobalStyle } from "../../../GlobalStyle";
 import { useEffect, useState } from "react";
 import { IUniversity } from "../../interfaces/University";
 import { UniversityAPI } from "../../api/api";

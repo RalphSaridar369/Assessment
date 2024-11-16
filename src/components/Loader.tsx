@@ -1,6 +1,6 @@
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-import { GlobalStyle } from "../GlobalStyle";
+import { GlobalStyle } from "../../GlobalStyle";
 
 const Loader = () => {
   return (

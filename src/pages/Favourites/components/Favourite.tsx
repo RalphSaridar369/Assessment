@@ -1,54 +1,16 @@
 import React, { useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { IUniversity } from "../../../interfaces/University";
-import { GlobalStyle } from "../../../GlobalStyle";
-import { UniversityStyle } from "../Style";
+import { GlobalStyle } from "../../../../GlobalStyle";
+import * as Linking from "expo-linking";
+import { FavouriteStyle } from "../Style";
 import { Ionicons } from "@expo/vector-icons";
-import { getData, storeData } from "../../../utils/AsyncStorage";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import Loader from "../../../components/Loader";
 
-interface UniversityProps {
-  university: IUniversity;
-  isFavourite: () => boolean;
-  setFavourites: (data: IUniversity) => void;
-}
-
-export const University = (props: UniversityProps) => {
+export const Favourite = (props: any) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const setFavourite = async (data: IUniversity) => {
-    console.log("first");
-    let favourites = await getData("favourites");
-    if (favourites) {
-      let favouritesParsed = JSON.parse(favourites);
-      console.log("Before setting favourites: ", favouritesParsed);
-      if (
-        favouritesParsed?.some(
-          (favourite: IUniversity) => favourite.name === data.name
-        )
-      ) {
-        //removing from the asyncStorage
-        favouritesParsed = favouritesParsed.filter(
-          (favourite: IUniversity) => favourite.name !== data.name
-        );
-      } else {
-        //adding to the asyncStorage
-        favouritesParsed = [...favouritesParsed, data];
-      }
-      await storeData("favourites", JSON.stringify(favouritesParsed));
-      props.setFavourites(favouritesParsed);
-    } else {
-      await storeData("favourites", JSON.stringify([data]));
-      props.setFavourites(data);
-    }
-  };
-
-  const openModal = () => {
-    setModalVisible(true);
-  };
 
   return (
     <>
@@ -83,30 +45,29 @@ export const University = (props: UniversityProps) => {
         </SafeAreaView>
       </SafeAreaProvider>
       <TouchableOpacity
-        style={UniversityStyle.universityContainer}
-        onPress={() => openModal()}
+        style={FavouriteStyle.favouritesContainer}
+        onPress={() => setModalVisible(true)}
       >
-        <View style={UniversityStyle.titleContainer}>
+        <View style={FavouriteStyle.titleContainer}>
           <Text style={[GlobalStyle.md, { width: "80%" }]}>
             {props.university.name}
           </Text>
-          <TouchableOpacity onPress={() => setFavourite(props.university)}>
-            <Ionicons
-              name={props.isFavourite() ? "heart" : "heart-outline"}
-              size={24}
-              color="red"
-            />
+          <TouchableOpacity
+            onPress={() => props.removeFavourite(props.university.name)}
+          >
+            <Ionicons name={"heart"} size={24} color="red" />
           </TouchableOpacity>
         </View>
         <Text style={GlobalStyle.sm}>
           {props.university.country}
           {props.university["state-province"] &&
-            `, ${props.university["state-province"]}`}
+            props.university["state-province"]}
         </Text>
       </TouchableOpacity>
     </>
   );
 };
+
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
